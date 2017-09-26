@@ -2,22 +2,26 @@
 
 namespace Cklmercer\ModelSettings;
 
+use Illuminate\Database\Eloquent\Model;
+
 trait HasSettings
 {
+    protected static $instance;
+
     /**
      * Boot the HasSettings trait.
      *
      * @return void
      */
-    public static function bootHasSettings()
+    public static function bootHasSettings(): void
     {
-        self::creating(function ($model) {
+        self::creating(function (Model $model) {
             if (! $model->settings) {
                 $model->settings = $model->getDefaultSettings();
             }
         });
 
-        self::saving(function ($model) {
+        self::saving(function (Model $model) {
             if ($model->settings && property_exists($model, 'allowedSettings') && is_array($model->allowedSettings)) {
                 $model->settings = array_only($model->settings, $model->allowedSettings);
             }
@@ -29,7 +33,7 @@ trait HasSettings
      *
      * @return array
      */
-    public function getDefaultSettings()
+    public function getDefaultSettings(): array
     {
         return (isset($this->defaultSettings) && is_array($this->defaultSettings))
             ? $this->defaultSettings
@@ -42,7 +46,7 @@ trait HasSettings
      * @param json $settings
      * @return mixed
      */
-    public function getSettingsAttribute($settings)
+    public function getSettingsAttribute($settings): object
     {
         return json_decode($settings, true);
     }
@@ -53,7 +57,7 @@ trait HasSettings
      * @param  $settings
      * @return void
      */
-    public function setSettingsAttribute($settings)
+    public function setSettingsAttribute($settings): void
     {
         $this->attributes['settings'] = json_encode($settings);
     }
@@ -65,8 +69,22 @@ trait HasSettings
      * @param mixed|null  $default
      * @return Settings
      */
-    public function settings($key = null, $default = null)
+    public function settings($key = null, $default = null): Settings
     {
-        return $key ? $this->settings()->get($key, $default) : new Settings($this);
+        return $key ? $this->settings()->get($key, $default) : $this->getSettingsInstance();
+    }
+
+    /**
+     * Get an instance of Settings.
+     *
+     * @return Settings
+     */
+    private function getSettingsInstance(): Settings
+    {
+        if (is_null(static::$instance)) {
+            static::$instance = new Settings($this);
+        }
+
+        return static::$instance;
     }
 }

@@ -26,7 +26,7 @@ class Settings
      *
      * @return array|null
      */
-    public function all()
+    public function all(): ?array
     {
         return $this->model->settings;
     }
@@ -37,7 +37,7 @@ class Settings
      * @param array $settings
      * @return $this
      */
-    public function apply($settings = [])
+    public function apply($settings = []): Settings
     {
         $this->model->settings = (array) $settings;
         $this->model->save();
@@ -49,9 +49,9 @@ class Settings
      * Delete the setting at the given path.
      *
      * @param string|null $path
-     * @return array
+     * @return $this
      */
-    public function delete($path = null)
+    public function delete($path = null): Settings
     {
         if (! $path) {
             return $this->set([]);
@@ -69,9 +69,9 @@ class Settings
      *
      * @alias delete()
      * @param null $path
-     * @return array
+     * @return $this
      */
-    public function forget($path = null)
+    public function forget($path = null): Settings
     {
         return $this->delete($path);
     }
@@ -84,7 +84,7 @@ class Settings
      *
      * @return mixed
      */
-    public function get($path = null, $default = null)
+    public function get($path = null, $default = null): mixed
     {
         return $path ? array_get($this->all(), $path, $default) : $this->all();
     }
@@ -96,7 +96,7 @@ class Settings
      *
      * @return bool
      */
-    public function has($path)
+    public function has($path): bool
     {
         return (bool) array_has($this->all(), $path);
     }
@@ -107,9 +107,9 @@ class Settings
      * @param string|null $path
      * @param mixed       $value
      *
-     * @return array
+     * @return $this
      */
-    public function set($path = null, $value = [])
+    public function set($path = null, $value = []): Settings
     {
         if (func_num_args() < 2) {
             $value = $path;
@@ -131,9 +131,9 @@ class Settings
      * @param string $path
      * @param mixed  $value
      *
-     * @return $this|array
+     * @return $this
      */
-    public function update($path, $value)
+    public function update($path, $value): Settings
     {
         return $this->set($path, $value);
     }
