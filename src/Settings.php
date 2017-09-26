@@ -70,7 +70,7 @@ class Settings
      */
     public function delete(?string $path = null): Settings
     {
-        if (! $path) {
+        if (!$path) {
             return $this->set([]);
         }
 
@@ -154,9 +154,10 @@ class Settings
     }
 
     /**
-     * Resets either all or the given setting
+     * Resets either all or the given setting.
      *
      * @param null|string $path
+     *
      * @return Settings
      */
     public function reset(?string $path = null): Settings
@@ -166,6 +167,7 @@ class Settings
         if ($path) {
             return $this->set($path, $default->get($path, null));
         }
+
         return $this->apply($default);
     }
 }
