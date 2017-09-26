@@ -3,6 +3,7 @@
 namespace Cklmercer\ModelSettings;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
 class Settings
@@ -35,23 +36,23 @@ class Settings
     /**
      * Get the model's settings.
      *
-     * @return array|null
+     * @return Collection
      */
-    public function all(): ?array
+    public function all(): Collection
     {
-        return Cache::rememberForever($this->cacheKey, function (): ?array {
+        return collect(Cache::rememberForever($this->cacheKey, function (): Collection {
             return $this->model->settings;
-        });
+        }));
     }
 
     /**
      * Apply the model's settings.
      *
-     * @param array $settings
+     * @param array|Collection $settings
      *
      * @return $this
      */
-    public function apply(array $settings = []): Settings
+    public function apply($settings = []): Settings
     {
         $this->model->settings = $settings;
         $this->model->save();
@@ -73,9 +74,7 @@ class Settings
             return $this->set([]);
         }
 
-        $settings = $this->all();
-
-        array_forget($settings, $path);
+        $settings = $this->all()->forget($path);
 
         return $this->apply($settings);
     }
@@ -104,7 +103,7 @@ class Settings
      */
     public function get(?string $path = null, $default = null)
     {
-        return $path ? array_get($this->all(), $path, $default) : $this->all();
+        return $path ? $this->all()->get($path, $default) : $this->all();
     }
 
     /**
@@ -116,7 +115,7 @@ class Settings
      */
     public function has(string $path): bool
     {
-        return (bool) array_has($this->all(), $path);
+        return $this->all()->has($path);
     }
 
     /**
@@ -134,9 +133,7 @@ class Settings
             $path = null;
         }
 
-        $settings = $this->all();
-
-        array_set($settings, $path, $value);
+        $settings = $this->all()->put($path, $value);
 
         return $this->apply($settings);
     }

@@ -3,6 +3,7 @@
 namespace Cklmercer\ModelSettings;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 
 trait HasSettings
 {
@@ -23,7 +24,7 @@ trait HasSettings
 
         self::saving(function (Model $model) {
             if ($model->settings && property_exists($model, 'allowedSettings') && is_array($model->allowedSettings)) {
-                $model->settings = array_only($model->settings, $model->allowedSettings);
+                $model->settings = $model->settings->only($model->allowedSettings);
             }
         });
     }
@@ -31,13 +32,13 @@ trait HasSettings
     /**
      * Get the model's default settings.
      *
-     * @return array
+     * @return Collection
      */
-    public function getDefaultSettings(): array
+    public function getDefaultSettings(): Collection
     {
-        return (isset($this->defaultSettings) && is_array($this->defaultSettings))
+        return collect((isset($this->defaultSettings) && is_array($this->defaultSettings))
             ? $this->defaultSettings
-            : [];
+            : []);
     }
 
     /**
@@ -45,23 +46,23 @@ trait HasSettings
      *
      * @param string $settings
      *
-     * @return array|null
+     * @return Collection
      */
-    public function getSettingsAttribute(string $settings): ?array
+    public function getSettingsAttribute(string $settings): Collection
     {
-        return json_decode($settings, true);
+        return collect(json_decode($settings, true));
     }
 
     /**
      * Set the settings attribute.
      *
-     * @param array $settings
+     * @param array|Collection $settings
      *
      * @return void
      */
-    public function setSettingsAttribute(array $settings): void
+    public function setSettingsAttribute($settings): void
     {
-        $this->attributes['settings'] = json_encode($settings);
+        $this->attributes['settings'] = (is_array($settings)) ? json_encode($settings) : $settings->toJson();
     }
 
     /**
