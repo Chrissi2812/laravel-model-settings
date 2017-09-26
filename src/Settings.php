@@ -3,13 +3,23 @@
 namespace Cklmercer\ModelSettings;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 
 class Settings
 {
     /**
+     * Stores a reference to the Model.
+     *
      * @var Model
      */
     protected $model;
+
+    /**
+     * Unique key for the settings cache.
+     *
+     * @var string
+     */
+    protected $cacheKey;
 
     /**
      * Settings constructor.
@@ -19,6 +29,7 @@ class Settings
     public function __construct(Model $model)
     {
         $this->model = $model;
+        $this->cacheKey = "user.$model->id.settings";
     }
 
     /**
@@ -28,19 +39,23 @@ class Settings
      */
     public function all(): ?array
     {
-        return $this->model->settings;
+        return Cache::rememberForever($this->cacheKey, function (): ?array {
+            return $this->model->settings;
+        });
     }
 
     /**
      * Apply the model's settings.
      *
      * @param array $settings
+     *
      * @return $this
      */
-    public function apply($settings = []): Settings
+    public function apply(array $settings = []): Settings
     {
-        $this->model->settings = (array) $settings;
+        $this->model->settings = $settings;
         $this->model->save();
+        Cache::forget($this->cacheKey);
 
         return $this;
     }
@@ -49,9 +64,10 @@ class Settings
      * Delete the setting at the given path.
      *
      * @param string|null $path
+     *
      * @return $this
      */
-    public function delete($path = null): Settings
+    public function delete(?string $path = null): Settings
     {
         if (! $path) {
             return $this->set([]);
@@ -68,10 +84,12 @@ class Settings
      * Forget the setting at the given path.
      *
      * @alias delete()
-     * @param null $path
+     *
+     * @param string|null $path
+     *
      * @return $this
      */
-    public function forget($path = null): Settings
+    public function forget(?string $path = null): Settings
     {
         return $this->delete($path);
     }
@@ -84,7 +102,7 @@ class Settings
      *
      * @return mixed
      */
-    public function get($path = null, $default = null): mixed
+    public function get(?string $path = null, $default = null)
     {
         return $path ? array_get($this->all(), $path, $default) : $this->all();
     }
@@ -96,7 +114,7 @@ class Settings
      *
      * @return bool
      */
-    public function has($path): bool
+    public function has(string $path): bool
     {
         return (bool) array_has($this->all(), $path);
     }
@@ -109,7 +127,7 @@ class Settings
      *
      * @return $this
      */
-    public function set($path = null, $value = []): Settings
+    public function set(?string $path = null, $value = []): Settings
     {
         if (func_num_args() < 2) {
             $value = $path;
@@ -133,7 +151,7 @@ class Settings
      *
      * @return $this
      */
-    public function update($path, $value): Settings
+    public function update(string $path, $value): Settings
     {
         return $this->set($path, $value);
     }

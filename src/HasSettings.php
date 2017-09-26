@@ -43,10 +43,11 @@ trait HasSettings
     /**
      * Get the settings attribute.
      *
-     * @param json $settings
-     * @return mixed
+     * @param string $settings
+     *
+     * @return array|null
      */
-    public function getSettingsAttribute($settings): object
+    public function getSettingsAttribute(string $settings): ?array
     {
         return json_decode($settings, true);
     }
@@ -54,10 +55,11 @@ trait HasSettings
     /**
      * Set the settings attribute.
      *
-     * @param  $settings
+     * @param array $settings
+     *
      * @return void
      */
-    public function setSettingsAttribute($settings): void
+    public function setSettingsAttribute(array $settings): void
     {
         $this->attributes['settings'] = json_encode($settings);
     }
@@ -67,9 +69,10 @@ trait HasSettings
      *
      * @param string|null $key
      * @param mixed|null  $default
+     *
      * @return Settings
      */
-    public function settings($key = null, $default = null): Settings
+    public function settings(?string $key = null, $default = null): Settings
     {
         return $key ? $this->settings()->get($key, $default) : $this->getSettingsInstance();
     }
