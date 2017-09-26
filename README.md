@@ -1,8 +1,6 @@
 # laravel-model-settings
 Simple yet flexible settings for your Laravel models.
 
-_Note: I will be updating this plugin in the near future to better match the API of the new `cache()` helper method that has been introduced in Laravel 5.3_
-
 ## Installation
 ##### 1.) Install via composer
 ```bash
@@ -42,14 +40,16 @@ class User extends Authenticatable
 ```php
 $user = App\User::first();
 
-$user->settings()->all(); // Returns an array of the user's settings.
-$user->settings()->get(); // Returns an array of the user's settings.
+$user->settings->all(); // Returns an array of the user's settings.
+$user->settings()->all(); // Returns an collection of the user's settings.
+$user->settings()->get(); // Returns an collection of the user's settings.
 ```
 
 ##### 2.) Get a specific setting.
 ```php
 $user = App\User::first();
 
+$user->settings->get('some.setting');
 $user->settings()->get('some.setting');
 $user->settings()->get('some.setting', $defaultValue); // With a default value.
 $user->settings('some.setting'); // Quicker access.
@@ -78,7 +78,15 @@ $user->settings()->delete('some.setting');
 $user->settings()->forget('some.setting');
 ```
 
-##### 6.) Set the default settings for a new model.
+##### 6.) Reset settings from a model.
+```php
+$user = App\User::first();
+
+$user->settings()->reset('some.setting');
+$user->settings()->reset(); // resets all settings
+```
+
+##### 7.) Set the default settings for a new model.
 
 If you define `$defaultSettings` as an array property on your model, we will use its value as the default settings for 
 any new models that are created *without* settings.
@@ -105,7 +113,7 @@ class User extends Authenticatable
 }
 ```
 
-##### 7.) Specify the settings that are allowed.
+##### 8.) Specify the settings that are allowed.
 
 If you define `$allowedSettings` as an array property then only settings which match a value within 
 the `$allowedSettings` array will be saved on the model.
