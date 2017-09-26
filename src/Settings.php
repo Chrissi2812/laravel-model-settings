@@ -152,4 +152,20 @@ class Settings
     {
         return $this->set($path, $value);
     }
+
+    /**
+     * Resets either all or the given setting
+     *
+     * @param null|string $path
+     * @return Settings
+     */
+    public function reset(?string $path = null): Settings
+    {
+        /** @var Collection $default */
+        $default = $this->model->getDefaultSettings();
+        if ($path) {
+            return $this->set($path, $default->get($path, null));
+        }
+        return $this->apply($default);
+    }
 }
