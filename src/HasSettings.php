@@ -12,7 +12,7 @@ trait HasSettings
     public static function bootHasSettings()
     {
         self::creating(function ($model) {
-            if (! $model->settings) {
+            if (!$model->settings) {
                 $model->settings = $model->getDefaultSettings();
             }
         });
@@ -40,6 +40,7 @@ trait HasSettings
      * Get the settings attribute.
      *
      * @param json $settings
+     *
      * @return mixed
      */
     public function getSettingsAttribute($settings)
@@ -51,6 +52,7 @@ trait HasSettings
      * Set the settings attribute.
      *
      * @param  $settings
+     *
      * @return void
      */
     public function setSettingsAttribute($settings)
@@ -63,6 +65,7 @@ trait HasSettings
      *
      * @param string|null $key
      * @param mixed|null  $default
+     *
      * @return Settings
      */
     public function settings($key = null, $default = null)
