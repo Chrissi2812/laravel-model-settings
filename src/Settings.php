@@ -3,6 +3,7 @@
 namespace Cklmercer\ModelSettings;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -74,7 +75,8 @@ class Settings
             return $this->set([]);
         }
 
-        $settings = $this->all()->forget($path);
+        $settings = $this->all()->toArray();
+        Arr::forget($settings, $path);
 
         return $this->apply($settings);
     }
@@ -103,7 +105,7 @@ class Settings
      */
     public function get(?string $path = null, $default = null)
     {
-        return $path ? $this->all()->get($path, $default) : $this->all();
+        return $path ? Arr::get($this->all(), $path, $default) : $this->all();
     }
 
     /**
@@ -115,7 +117,7 @@ class Settings
      */
     public function has(string $path): bool
     {
-        return $this->all()->has($path);
+        return Arr::has($this->all(), $path);
     }
 
     /**
@@ -133,7 +135,8 @@ class Settings
             $path = null;
         }
 
-        $settings = $this->all()->put($path, $value);
+        $settings = $this->all()->toArray();
+        Arr::set($settings, $path, $value);
 
         return $this->apply($settings);
     }

@@ -3,6 +3,7 @@
 namespace Cklmercer\ModelSettings;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 
@@ -74,7 +75,8 @@ class Options
             return $this->set([]);
         }
 
-        $options = $this->all()->forget($path);
+        $options = $this->all()->toArray();
+        Arr::forget($options, $path);
 
         return $this->apply($options);
     }
@@ -103,7 +105,7 @@ class Options
      */
     public function get(?string $path = null, $default = null)
     {
-        return $path ? $this->all()->get($path, $default) : $this->all();
+        return $path ? Arr::get($this->all(), $path, $default) : $this->all();
     }
 
     /**
@@ -115,7 +117,7 @@ class Options
      */
     public function has(string $path): bool
     {
-        return $this->all()->has($path);
+        return Arr::has($this->all(), $path);
     }
 
     /**
@@ -133,7 +135,8 @@ class Options
             $path = null;
         }
 
-        $options = $this->all()->put($path, $value);
+        $options = $this->all()->toArray();
+        Arr::set($options, $path, $value);
 
         return $this->apply($options);
     }
