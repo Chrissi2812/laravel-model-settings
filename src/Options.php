@@ -31,7 +31,7 @@ class Options
     public function __construct(Model $model)
     {
         $this->model = $model;
-        $this->cacheKey = "user.$model->id.options";
+        $this->cacheKey = "{$model->getTable()}.{$model->getKey()}.options";
     }
 
     /**

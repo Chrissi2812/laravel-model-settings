@@ -31,7 +31,7 @@ class Settings
     public function __construct(Model $model)
     {
         $this->model = $model;
-        $this->cacheKey = "user.$model->id.settings";
+        $this->cacheKey = "{$model->getTable()}.{$model->getKey()}.settings";
     }
 
     /**
