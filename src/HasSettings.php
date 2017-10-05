@@ -7,7 +7,7 @@ use Illuminate\Support\Collection;
 
 trait HasSettings
 {
-    protected static $instance;
+    protected static $settingsInstance;
 
     /**
      * Boot the HasSettings trait.
@@ -44,11 +44,11 @@ trait HasSettings
     /**
      * Get the settings attribute.
      *
-     * @param string $settings
+     * @param string|null $settings
      *
      * @return Collection
      */
-    public function getSettingsAttribute(string $settings): Collection
+    public function getSettingsAttribute(?string $settings): Collection
     {
         return collect(json_decode($settings, true));
     }
@@ -71,9 +71,9 @@ trait HasSettings
      * @param string|null $key
      * @param mixed|null  $default
      *
-     * @return Settings
+     * @return Settings|mixed
      */
-    public function settings(?string $key = null, $default = null): Settings
+    public function settings(?string $key = null, $default = null)
     {
         return $key ? $this->settings()->get($key, $default) : $this->getSettingsInstance();
     }
@@ -85,10 +85,10 @@ trait HasSettings
      */
     private function getSettingsInstance(): Settings
     {
-        if (is_null(static::$instance)) {
-            static::$instance = new Settings($this);
+        if (is_null(static::$settingsInstance)) {
+            static::$settingsInstance = new Settings($this);
         }
 
-        return static::$instance;
+        return static::$settingsInstance;
     }
 }
