@@ -34,6 +34,11 @@ class Options
         $this->cacheKey = "{$model->getTable()}.{$model->getKey()}.options";
     }
 
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
+
     /**
      * Get the model's options.
      *

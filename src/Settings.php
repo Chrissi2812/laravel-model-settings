@@ -34,6 +34,11 @@ class Settings
         $this->cacheKey = "{$model->getTable()}.{$model->getKey()}.settings";
     }
 
+    public function getModel(): Model
+    {
+        return $this->model;
+    }
+
     /**
      * Get the model's settings.
      *

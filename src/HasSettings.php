@@ -85,10 +85,10 @@ trait HasSettings
      */
     private function getSettingsInstance(): Settings
     {
-        if (is_null(static::$settingsInstance)) {
-            static::$settingsInstance = new Settings($this);
+        if (is_null(self::$settingsInstance) || self::$settingsInstance->getModel() !== $this) {
+            self::$settingsInstance = new Settings($this);
         }
 
-        return static::$settingsInstance;
+        return self::$settingsInstance;
     }
 }

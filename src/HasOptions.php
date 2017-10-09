@@ -85,10 +85,10 @@ trait HasOptions
      */
     private function getOptionsInstance(): Options
     {
-        if (is_null(static::$optionsInstance)) {
-            static::$optionsInstance = new Options($this);
+        if (is_null(self::$optionsInstance) || self::$optionsInstance->getModel() !== $this) {
+            self::$optionsInstance = new Options($this);
         }
 
-        return static::$optionsInstance;
+        return self::$optionsInstance;
     }
 }
