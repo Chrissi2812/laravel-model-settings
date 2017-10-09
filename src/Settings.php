@@ -77,7 +77,7 @@ class Settings
     public function delete(?string $path = null): Settings
     {
         if (!$path) {
-            return $this->set([]);
+            return $this->apply([]);
         }
 
         $settings = $this->all()->toArray();

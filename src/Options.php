@@ -77,7 +77,7 @@ class Options
     public function delete(?string $path = null): Options
     {
         if (!$path) {
-            return $this->set([]);
+            return $this->apply([]);
         }
 
         $options = $this->all()->toArray();
