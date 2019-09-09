@@ -58,7 +58,7 @@ class Settings
      *
      * @return $this
      */
-    public function apply($settings = []): Settings
+    public function apply($settings = []): self
     {
         $this->model->settings = $settings;
         $this->model->save();
@@ -74,7 +74,7 @@ class Settings
      *
      * @return $this
      */
-    public function delete(?string $path = null): Settings
+    public function delete(?string $path = null): self
     {
         if (!$path) {
             return $this->apply([]);
@@ -95,7 +95,7 @@ class Settings
      *
      * @return $this
      */
-    public function forget(?string $path = null): Settings
+    public function forget(?string $path = null): self
     {
         return $this->delete($path);
     }
@@ -133,7 +133,7 @@ class Settings
      *
      * @return $this
      */
-    public function set(?string $path = null, $value = []): Settings
+    public function set(?string $path = null, $value = []): self
     {
         if (func_num_args() < 2) {
             $value = $path;
@@ -156,7 +156,7 @@ class Settings
      *
      * @return $this
      */
-    public function update(string $path, $value): Settings
+    public function update(string $path, $value): self
     {
         return $this->set($path, $value);
     }
@@ -168,7 +168,7 @@ class Settings
      *
      * @return Settings
      */
-    public function reset(?string $path = null): Settings
+    public function reset(?string $path = null): self
     {
         /** @var Collection $default */
         $default = $this->model->getDefaultSettings();
