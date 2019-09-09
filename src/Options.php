@@ -58,7 +58,7 @@ class Options
      *
      * @return $this
      */
-    public function apply($options = []): Options
+    public function apply($options = []): self
     {
         $this->model->options = $options;
         $this->model->save();
@@ -74,7 +74,7 @@ class Options
      *
      * @return $this
      */
-    public function delete(?string $path = null): Options
+    public function delete(?string $path = null): self
     {
         if (!$path) {
             return $this->apply([]);
@@ -95,7 +95,7 @@ class Options
      *
      * @return $this
      */
-    public function forget(?string $path = null): Options
+    public function forget(?string $path = null): self
     {
         return $this->delete($path);
     }
@@ -133,7 +133,7 @@ class Options
      *
      * @return $this
      */
-    public function set(?string $path = null, $value = []): Options
+    public function set(?string $path = null, $value = []): self
     {
         if (func_num_args() < 2) {
             $value = $path;
@@ -156,7 +156,7 @@ class Options
      *
      * @return $this
      */
-    public function update(string $path, $value): Options
+    public function update(string $path, $value): self
     {
         return $this->set($path, $value);
     }
@@ -168,7 +168,7 @@ class Options
      *
      * @return Options
      */
-    public function reset(?string $path = null): Options
+    public function reset(?string $path = null): self
     {
         /** @var Collection $default */
         $default = $this->model->getDefaultOptions();
